@@ -1,6 +1,6 @@
 import { Color, Product, VariantProduct } from '../interfaces';
 
-// Function to format the price to dollars
+// Función para formatear el precio a dólares
 export const formatPrice = (price: number) => {
 	return new Intl.NumberFormat('en-US', {
 		style: 'currency',
@@ -10,10 +10,10 @@ export const formatPrice = (price: number) => {
 	}).format(price);
 };
 
-// Function to prepare products - (CELLULARS)
+// Función de preparación de productos - (CELULARES)
 export const prepareProducts = (products: Product[]) => {
 	return products.map(product => {
-		// Group variants by color
+		// Agrupar variantes por color
 		const colors = product.variants.reduce(
 			(acc: Color[], variant: VariantProduct) => {
 				const existingColor = acc.find(
@@ -21,12 +21,12 @@ export const prepareProducts = (products: Product[]) => {
 				);
 
 				if (existingColor) {
-					// If the color is already available, we compare prices
+					// Si el color ya está disponible, comparamos precios
 					existingColor.price = Math.min(
 						existingColor.price,
 						variant.price
 					);
-				} // We maintain the minimum price
+				} // Mantenemos el precio mínimo
 				else {
 					acc.push({
 						color: variant.color,
@@ -40,10 +40,10 @@ export const prepareProducts = (products: Product[]) => {
 			[]
 		);
 
-		// Obtain the lowest price of the grouped variants
+		// Obtener el precio más bajo de las variantes agrupadas
 		const price = Math.min(...colors.map(item => item.price));
 
-		// Return the formatted product
+		// Devuelve el producto formateado
 		return {
 			...product,
 			price,

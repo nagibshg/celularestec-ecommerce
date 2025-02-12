@@ -1,30 +1,40 @@
-import { Brands } from "../components/home/Brands"
-import { FeatureGrid } from "../components/home/FeatureGrid"
-import { ProductGrid } from "../components/home/ProductGrid"
-import { allCelulares, popularCelulares, recentCelulares } from "../data/initialData"
-import { prepareProducts } from "../helpers"
+import { Brands } from '../components/home/Brands';
+import { FeatureGrid } from '../components/home/FeatureGrid';
+import { ProductGrid } from '../components/home/ProductGrid';
+import { ProductGridSkeleton } from '../components/skeletons/ProductGridSkeleton';
+import { prepareProducts } from '../helpers';
+import { useHomeProducts } from '../hooks';
 
 export const HomePage = () => {
-    const preparedRecentProducts = prepareProducts(recentCelulares);
-    const preparedPopularProducts = prepareProducts(popularCelulares);
+	const { recentProducts, popularProducts, isLoading } =
+		useHomeProducts();
 
-    return (
-        <div>
-            <FeatureGrid />
+	const preparedRecentProducts = prepareProducts(recentProducts);
+	const preparedPopularProducts = prepareProducts(popularProducts);
 
-            <ProductGrid
-                title='Nuevos productos'
-                products={preparedRecentProducts}
-            />
+	return (
+		<div>
+			<FeatureGrid />
 
-            <ProductGrid
-                title='Productos Desctacados'
-                products={preparedPopularProducts}
-            />
+			{isLoading ? (
+				<ProductGridSkeleton numberOfProducts={4} />
+			) : (
+				<ProductGrid
+					title='Nuevos Productos'
+					products={preparedRecentProducts}
+				/>
+			)}
 
-            <Brands />
+			{isLoading ? (
+				<ProductGridSkeleton numberOfProducts={4} />
+			) : (
+				<ProductGrid
+					title='Productos Destacados'
+					products={preparedPopularProducts}
+				/>
+			)}
 
-
-        </div>
-    )
-}
+			<Brands />
+		</div>
+	);
+};
