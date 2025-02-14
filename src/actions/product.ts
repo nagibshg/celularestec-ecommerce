@@ -1,26 +1,17 @@
 import { supabase } from '../supabase/client';
 
-export const getProducts = async (page: number) => {
-	const itemsPerPage = 10;
-	const from = (page - 1) * itemsPerPage;
-	const to = from + itemsPerPage - 1;
-
-	const {
-		data: products,
-		error,
-		count,
-	} = await supabase
+export const getProducts = async () => {
+	const { data: products, error } = await supabase
 		.from('products')
-		.select('*, variants(*)', { count: 'exact' })
-		.order('created_at', { ascending: false })
-		.range(from, to);
+		.select('*, variants(*)')
+		.order('created_at', { ascending: false });
 
 	if (error) {
 		console.log(error.message);
 		throw new Error(error.message);
 	}
 
-	return { products, count };
+	return products;
 };
 
 export const getFilteredProducts = async ({
@@ -94,20 +85,6 @@ export const getProductBySlug = async (slug: string) => {
 		.select('*, variants(*)')
 		.eq('slug', slug)
 		.single();
-
-	if (error) {
-		console.log(error.message);
-		throw new Error(error.message);
-	}
-
-	return data;
-};
-
-export const searchProducts = async (searchTerm: string) => {
-	const { data, error } = await supabase
-		.from('products')
-		.select('*, variants(*)')
-		.ilike('name', `%${searchTerm}%`); //Buscar productos cuyo nombre contenga el término de búsqueda
 
 	if (error) {
 		console.log(error.message);
