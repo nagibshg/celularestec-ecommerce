@@ -1,25 +1,37 @@
-import { Outlet, useLocation } from "react-router-dom";
-import { Navbar } from "../components/shared/Navbar";
-import { Footer } from "../components/shared/Footer";
-import { Banner } from "../components/home/Banner";
-import { Newsletter } from "../components/home/Newsletter";
+import { Outlet, useLocation } from 'react-router-dom';
+import { Navbar } from '../components/shared/Navbar';
+import { Footer } from '../components/shared/Footer';
+import { Banner } from '../components/home/Banner';
+import { Newsletter } from '../components/home/Newsletter';
+import { Sheet } from '../components/shared/Sheet';
+import { useGlobalStore } from '../store/global.store';
+import { NavbarMobile } from '../components/shared/NavbarMobile';
 
 export const RootLayout = () => {
-    const { pathname } = useLocation();
+	const { pathname } = useLocation();
 
-    return (
-        <div className="h-screen flex flex-col font-montserrat">
-            <Navbar />
+	const isSheetOpen = useGlobalStore(state => state.isSheetOpen);
+	const activeNavMobile = useGlobalStore(
+		state => state.activeNavMobile
+	);
 
-            {pathname === '/' && <Banner />}
+	return (
+		<div className='h-screen flex flex-col font-montserrat'>
+			<Navbar />
 
-            <main className="container my-8 flex-1">
-                <Outlet />
-            </main>
+			{pathname === '/' && <Banner />}
 
-            {pathname === '/' && <Newsletter />}
+			<main className='container my-8 flex-1'>
+				<Outlet />
+			</main>
 
-            <Footer />
-        </div>
-    );
+			{pathname === '/' && <Newsletter />}
+
+			{isSheetOpen && <Sheet />}
+
+			{activeNavMobile && <NavbarMobile />}
+
+			<Footer />
+		</div>
+	);
 };
