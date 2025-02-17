@@ -34,7 +34,7 @@ export const AboutPage = () => {
 				<p>
 					Para más información, no dudes en ponerte en contacto con
 					nosotros, a través de nuestro correo electrónico:
-					<a href='mailto:correo@celularesbaratos.com'>
+					<a href='mailto:correo@celularestec.com'>
 						correo@celularestec.com
 					</a>{' '}
 					o llamado al <a href='tel:333333333'>3333333333</a>
