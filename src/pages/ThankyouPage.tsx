@@ -1,17 +1,30 @@
-import { Link, useParams } from 'react-router-dom';
-import { useOrder } from '../hooks';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useOrder, useUser } from '../hooks';
 import { Loader } from '../components/shared/Loader';
 import { CiCircleCheck } from 'react-icons/ci';
 import { formatPrice } from '../helpers';
+import { useEffect } from 'react';
+import { supabase } from '../supabase/client';
 
 export const ThankyouPage = () => {
 	const { id } = useParams<{ id: string }>();
 
 	const { data, isLoading, isError } = useOrder(Number(id));
+	const { isLoading: isLoadingSession } = useUser();
+
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		supabase.auth.onAuthStateChange(async (event, session) => {
+			if (event === 'SIGNED_OUT' || !session) {
+				navigate('/login');
+			}
+		});
+	}, [navigate]);
 
 	if (isError) return <div>Error al cargar la orden</div>;
 
-	if (isLoading || !data) return <Loader />;
+	if (isLoading || !data || isLoadingSession) return <Loader />;
 
 	return (
 		<div className='flex flex-col h-screen'>
@@ -40,13 +53,13 @@ export const ThankyouPage = () => {
 					<h3 className='font-medium'>Tu pedido está confirmado</h3>
 
 					<p className='text-sm'>
-						Gracias por realizar tu compra en CelularesTec. Para
+						Gracias por realizar tu compra en Celularesotec. Para
 						realizar la transferencia te compartimos los siguientes
 						datos
 					</p>
 
 					<div className='space-y-0.5 text-sm'>
-						<p>BANCO PICHINCHA</p>
+						<p>BANCO BCP</p>
 						<p>Razón Social: CelularesTec</p>
 						<p>RUC: 123456789000</p>
 						<p>Tipo de cuenta: Corriente</p>

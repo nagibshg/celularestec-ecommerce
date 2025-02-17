@@ -10,10 +10,10 @@ export const formatPrice = (price: number) => {
 	}).format(price);
 };
 
-// Función de preparación de productos - (CELULARES)
+// Función para preparar los productos - (CELULARES)
 export const prepareProducts = (products: Product[]) => {
 	return products.map(product => {
-		// Agrupar variantes por color
+		// Agrupar las variantes por color
 		const colors = product.variants.reduce(
 			(acc: Color[], variant: VariantProduct) => {
 				const existingColor = acc.find(
@@ -21,7 +21,7 @@ export const prepareProducts = (products: Product[]) => {
 				);
 
 				if (existingColor) {
-					// Si el color ya está disponible, comparamos precios
+					// Si ya existe el color, comparamos los precios
 					existingColor.price = Math.min(
 						existingColor.price,
 						variant.price
@@ -43,7 +43,7 @@ export const prepareProducts = (products: Product[]) => {
 		// Obtener el precio más bajo de las variantes agrupadas
 		const price = Math.min(...colors.map(item => item.price));
 
-		// Devuelve el producto formateado
+		// Devolver el producto formateado
 		return {
 			...product,
 			price,
@@ -51,4 +51,31 @@ export const prepareProducts = (products: Product[]) => {
 			variants: product.variants,
 		};
 	});
+};
+
+// Función para formatear la fecha a formato 3 de enero de 2022
+export const formatDateLong = (date: string): string => {
+	const dateObject = new Date(date);
+
+	return dateObject.toLocaleDateString('es-ES', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	});
+};
+
+// Función para obtener el estado del pedido en español
+export const getStatus = (status: string): string => {
+	switch (status) {
+		case 'Pending':
+			return 'Pendiente';
+		case 'Paid':
+			return 'Pagado';
+		case 'Shipped':
+			return 'Enviado';
+		case 'Delivered':
+			return 'Entregado';
+		default:
+			return status;
+	}
 };
