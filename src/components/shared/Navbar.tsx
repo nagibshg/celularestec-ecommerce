@@ -40,7 +40,7 @@ export const Navbar = () => {
 						className={({ isActive }) =>
 							`${
 								isActive ? 'text-red-600 underline' : ''
-							} transition-all duration-300 font-medium hover:text-cyan-600 hover:underline `
+							} transition-all duration-300 font-medium hover:text-red-600 hover:underline `
 						}
 					>
 						{link.title}
