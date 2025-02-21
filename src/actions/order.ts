@@ -170,40 +170,55 @@ export const getOrdersByCustomerId = async () => {
 };
 
 export const getOrderById = async (orderId: number) => {
-	const { data, error: errorUser } = await supabase.auth.getUser();
+    const { data, error: errorUser } = await supabase.auth.getUser();
 
-	if (errorUser) {
-		console.log(errorUser);
-		throw new Error(errorUser.message);
-	}
+    if (errorUser) {
+        console.log(errorUser);
+        throw new Error(errorUser.message);
+    }
+    
+    const { data: userRole, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .single();
+        
+    if (roleError) {
+        console.log(roleError);
+        throw new Error(roleError.message);
+    }
+    
+    if (userRole.role === 'admin') {
+        return getOrderByIdAdmin(orderId);
+    }
+    
+    const { data: customer, error: customerError } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('user_id', data.user.id)
+        .single();
 
-	const { data: customer, error: customerError } = await supabase
-		.from('customers')
-		.select('id')
-		.eq('user_id', data.user.id)
-		.single();
+    if (customerError) {
+        console.log(customerError);
+        throw new Error(customerError.message);
+    }
 
-	if (customerError) {
-		console.log(customerError);
-		throw new Error(customerError.message);
-	}
+    const customerId = customer.id;
 
-	const customerId = customer.id;
+    const { data: order, error } = await supabase
+        .from('orders')
+        .select(
+            '*, addresses(*), customers(full_name, email), order_items(quantity, price, variants(color_name, storage, products(name, images)))'
+        )
+        .eq('customer_id', customerId)
+        .eq('id', orderId)
+        .single();
 
-	const { data: order, error } = await supabase
-		.from('orders')
-		.select(
-			'*, addresses(*), customers(full_name, email), order_items(quantity, price, variants(color_name, storage, products(name, images)))'
-		)
-		.eq('customer_id', customerId)
-		.eq('id', orderId)
-		.single();
-
-	if (error) {
-		console.log(error);
-		throw new Error(error.message);
-	}
-
+    if (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+	
 	return {
 		customer: {
 			email: order?.customers?.email,

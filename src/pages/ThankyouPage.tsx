@@ -53,7 +53,7 @@ export const ThankyouPage = () => {
 					<h3 className='font-medium'>Tu pedido está confirmado</h3>
 
 					<p className='text-sm'>
-						Gracias por realizar tu compra en Celularesotec. Para
+						Gracias por realizar tu compra en CelularesTec. Para
 						realizar la transferencia te compartimos los siguientes
 						datos
 					</p>
